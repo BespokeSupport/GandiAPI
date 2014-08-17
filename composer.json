@@ -15,5 +15,6 @@
         "psr-0": {
             "GandiAPI": "src/"
         }
-    }
+    },
+    "license": "MIT"
 }
