@@ -11,9 +11,12 @@
  * @link     https://github.com/RickSeymour/GandiAPI
  */
 
-namespace GandiAPI;
+namespace BespokeSupport\Gandi;
 
-require_once 'XML/RPC2/Client.php';
+// PEAR based XML RPC Client
+if (!class_exists('XML_RPC2_Client')) {
+    require_once 'XML/RPC2/Client.php';
+}
 
 /**
  * Class GandiAPI
@@ -78,7 +81,7 @@ class GandiAPI
         if (strlen($apiKey)) {
             $this->apikey = $apiKey;
         } else {
-            throw new \Exception('GandiAPI: apikey required');
+            throw new GandiException(GandiException::ERROR_API_KEY_REQUIRED);
         }
         $this->live = $live;
     }
