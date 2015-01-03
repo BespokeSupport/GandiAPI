@@ -13,11 +13,6 @@
 
 namespace BespokeSupport\Gandi;
 
-// PEAR based XML RPC Client
-if (!class_exists('XML_RPC2_Client')) {
-    require_once 'XML/RPC2/Client.php';
-}
-
 /**
  * Class GandiAPI
  *
@@ -67,7 +62,7 @@ class GandiAPI
      *
      * @throws \Exception
      */
-    function __construct($apiKey, $live = false)
+    function __construct($apiKey = null, $live = false)
     {
         switch ($live) {
         case true:
@@ -102,9 +97,11 @@ class GandiAPI
             },
             $property
         );
+
         if (!empty($property)) {
             $this->prefix = $property;
         }
+
         return $this;
     }
 

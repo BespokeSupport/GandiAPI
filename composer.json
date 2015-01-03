@@ -1,19 +1,21 @@
 {
-    "name": "rickseymour/gandiapi",
+    "name": "bespokesupport/gandi",
     "description": "API to Gandi.net",
     "authors": [
         {
             "name": "Rick Seymour",
-            "email": "code@rickseymour.com"
+            "email": "web@bespoke.support"
         }
     ],
-    "minimum-stability": "dev",
     "require": {
-        "php": ">=5.3.0"
+        "php": ">=5.3.0",
+        "pear/xml_rpc2": "dev-trunk",
+        "pear/http_request2": "dev-trunk",
+        "pear/pear_exception": "dev-trunk"
     },
     "autoload": {
-        "psr-0": {
-            "GandiAPI": "src/"
+        "psr-4": {
+            "BespokeSupport\\Gandi\\": "src/"
         }
     },
     "license": "MIT"

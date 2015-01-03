@@ -11,7 +11,7 @@
  * @link     https://github.com/RickSeymour/GandiAPI
  */
 
-namespace GandiAPI;
+namespace BespokeSupport\Gandi;
 
 /**
  * Class GandiAPILive
