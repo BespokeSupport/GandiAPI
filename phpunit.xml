@@ -25,6 +25,7 @@
         <log type="coverage-html" target="./log/codeCoverage" charset="UTF-8"
              yui="true" highlight="true"
              lowUpperBound="50" highLowerBound="80"/>
+        <log type="coverage-clover" target="./log/coverage.xml"/>
     </logging>
 
 </phpunit>
