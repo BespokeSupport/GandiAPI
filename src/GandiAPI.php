@@ -52,13 +52,7 @@ class GandiAPI
      */
     public function __construct($apiKey = null, $live = false)
     {
-        if (!$apiKey) {
-            throw new GandiException(GandiException::ERROR_API_KEY_REQUIRED);
-        } elseif (!preg_match('/^[a-zA-Z0-9]{24}$/', $apiKey)) {
-            throw new GandiException(GandiException::ERROR_API_KEY_INVALID);
-        }
-
-        $this->apiKey = $apiKey;
+        $this->apiKey = new GandiAPIKey($apiKey);
 
         if ($live === false) {
             $this->live = false;
@@ -160,7 +154,7 @@ class GandiAPI
      */
     public function getApiKey()
     {
-        return $this->apiKey;
+        return (string)$this->apiKey;
     }
 
     /**
