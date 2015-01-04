@@ -38,9 +38,9 @@ class GandiAPI
     protected $apiKey;
 
     /**
-     * @var string Partial endpoint being used
+     * @var string method being used
      */
-    protected $prefix = 'version';
+    protected $prefix = '';
 
     /**
      * Instantiates class
@@ -166,9 +166,14 @@ class GandiAPI
     /**
      * First Part of XML RPC call
      * @return string
+     * @throws GandiException
      */
     public function getPrefix()
     {
+        if (!strlen($this->prefix)) {
+            throw new GandiException(GandiException::ERROR_PREFIX_NOT_SET);
+        }
+
         return $this->prefix;
     }
 }
