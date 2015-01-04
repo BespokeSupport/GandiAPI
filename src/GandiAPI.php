@@ -50,7 +50,7 @@ class GandiAPI
      *
      * @throws GandiException
      */
-    function __construct($apiKey = null, $live = false)
+    public function __construct($apiKey = null, $live = false)
     {
         switch ($live) {
         case true:
@@ -62,7 +62,7 @@ class GandiAPI
             break;
         }
         if (strlen($apiKey)) {
-            $this->apikey = $apiKey;
+        $this->apiKey = $apiKey;
         } else {
             throw new GandiException(GandiException::ERROR_API_KEY_REQUIRED);
         }
@@ -73,7 +73,6 @@ class GandiAPI
      * Allows for chaining of api prefix
      *
      * @param string $property API Section
-     *
      * @return $this
      */
     function __get($property)
@@ -111,6 +110,9 @@ class GandiAPI
             $method
         );
 
+        /**
+         * @var $xml \XML_RPC2_Backend_Php_Client
+         */
         $xml = \XML_RPC2_Client::create(
             $this->getUrl(),
             array(
