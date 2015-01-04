@@ -52,21 +52,19 @@ class GandiAPI
      */
     public function __construct($apiKey = null, $live = false)
     {
-        switch ($live) {
-        case true:
-                $this->live = true;
-                $this->urlEndpoint = self::URL_LIVE;
-            break;
-        default:
-                $this->urlEndpoint = self::URL_TEST;
-            break;
-        }
-        if (strlen($apiKey)) {
-        $this->apiKey = $apiKey;
-        } else {
+        if (!$apiKey) {
             throw new GandiException(GandiException::ERROR_API_KEY_REQUIRED);
+        } elseif (!preg_match('/^[a-zA-Z0-9]{24}$/', $apiKey)) {
+            throw new GandiException(GandiException::ERROR_API_KEY_INVALID);
         }
-        $this->live = $live;
+
+        $this->apiKey = $apiKey;
+
+        if ($live === false) {
+            $this->live = false;
+        } else {
+            $this->live = true;
+        }
     }
 
     /**
