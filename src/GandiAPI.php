@@ -28,24 +28,19 @@ class GandiAPI
     const URL_TEST = 'https://rpc.ote.gandi.net/xmlrpc/';
 
     /**
-     * @var string
-     */
-    public $urlEndpoint;
-
-    /**
-     * @var bool
+     * @var bool Live/Test
      */
     public $live = false;
 
     /**
-     * @var string|null
+     * @var string API Key being used
      */
-    public $apikey;
+    protected $apiKey;
 
     /**
-     * @var string
+     * @var string Partial endpoint being used
      */
-    public $prefix = 'version';
+    protected $prefix = 'version';
 
     /**
      * Instantiates class
@@ -117,10 +112,10 @@ class GandiAPI
         );
 
         $xml = \XML_RPC2_Client::create(
-            $this->urlEndpoint,
+            $this->getUrl(),
             array(
                 'sslverify' => false,
-                'prefix' => $this->prefix . '.'
+                'prefix' => $this->getPrefix() . '.'
             )
         );
 
@@ -128,7 +123,7 @@ class GandiAPI
             return $xml->__call(
                 $method,
                 array(
-                    $this->apikey,
+                    $this->getApiKey(),
                     $args[0],
                     $args[1]
                 )
@@ -137,7 +132,7 @@ class GandiAPI
             return $xml->__call(
                 $method,
                 array(
-                    $this->apikey,
+                    $this->getApiKey(),
                     $args[0]
                 )
             );
@@ -145,9 +140,35 @@ class GandiAPI
             return $xml->__call(
                 $method,
                 array(
-                    $this->apikey
+                    $this->getApiKey()
                 )
             );
         }
+    }
+
+    /**
+     * @return string get the base URL for the XML RPC call
+     */
+    public function getUrl()
+    {
+        return ($this->live) ? self::URL_LIVE : self::URL_TEST;
+    }
+
+    /**
+     * Return API Key (set in constructor)
+     * @return string
+     */
+    public function getApiKey()
+    {
+        return $this->apiKey;
+    }
+
+    /**
+     * First Part of XML RPC call
+     * @return string
+     */
+    public function getPrefix()
+    {
+        return $this->prefix;
     }
 }
