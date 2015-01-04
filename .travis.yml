@@ -9,4 +9,4 @@ before_script:
   composer update --dev
 
 after_success:
-  - sh -c 'if [ "$TRAVIS_PHP_VERSION" == "5.5" ]; then php vendor/bin/coveralls -v; fi;'
+  - sh -c 'if [ "$TRAVIS_PHP_VERSION" = "5.5" ]; then php vendor/bin/coveralls -v; fi;'
