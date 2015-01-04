@@ -9,7 +9,7 @@ use BespokeSupport\Gandi\GandiException;
 
 class DefaultTest extends \PHPUnit_Framework_TestCase
 {
-    const API_KEY = 'test';
+    const API_KEY_INVALID = 'test';
 
     const API_VERSION = '3.3.24';
 
@@ -27,21 +27,48 @@ class DefaultTest extends \PHPUnit_Framework_TestCase
     {
         if (defined('GANDI_TEST_API_KEY')) {
             return GANDI_TEST_API_KEY;
+        } else if (getenv('GANDI_API_KEY')) {
+            return getenv('GANDI_API_KEY');
         } else {
-            return self::API_KEY;
+            throw new \Exception('define GANDI_TEST_API_KEY in new credentials.php script');
         }
     }
 
-
-    public function testErrorInstantiate()
+    public function testErrorNoApiKey()
     {
         try {
             $oGandi = new GandiAPI();
             $this->assertTrue(false);
-        } catch (\Exception $e) {
+        } catch (GandiException $e) {
             $this->assertTrue(true);
+            $this->assertEquals(GandiException::ERROR_API_KEY_INVALID, $e->getMessage());
         }
     }
+
+    public function testErrorApiKeyInvalid()
+    {
+        try {
+            $oGandi = new GandiAPITest(self::API_KEY_INVALID);
+            $this->assertTrue(false);
+        } catch (GandiException $e) {
+            $this->assertTrue(true);
+            $this->assertEquals(GandiException::ERROR_API_KEY_INVALID, $e->getMessage());
+        }
+    }
+
+    public function testErrorNoMethodSet()
+    {
+        try {
+            $oGandi = new GandiAPITest($this->getApiKey());
+            $oGandi->version();
+            $this->assertTrue(false);
+        } catch (GandiException $e) {
+            $this->assertTrue(true);
+            $this->assertEquals(GandiException::ERROR_PREFIX_NOT_SET, $e->getMessage());
+        }
+    }
+
+
     public function testLiveTestClasses()
     {
         $oGandi = new GandiAPILive($this->getApiKey());
@@ -53,16 +80,16 @@ class DefaultTest extends \PHPUnit_Framework_TestCase
     {
         $oGandi = new GandiAPI($this->getApiKey());
 
-        $this->assertEquals($this->getApiKey(), $oGandi->apikey);
-        $this->assertEquals(GandiAPI::URL_TEST, $oGandi->urlEndpoint);
+        $this->assertEquals($this->getApiKey(), $oGandi->getApiKey());
+        $this->assertEquals(GandiAPI::URL_TEST, $oGandi->getUrl());
         $this->assertFalse($oGandi->live);
-        $this->assertEquals('version', $oGandi->prefix);
     }
 
     public function testApiVersion()
     {
         $oGandi = new GandiAPITest($this->getApiKey());
-        $result = $oGandi->info();
+        $result = $oGandi->version->info();
+        $this->assertEquals('version', $oGandi->getPrefix());
         $this->assertArrayHasKey('api_version', $result);
         $this->assertEquals($result['api_version'], self::API_VERSION);
     }
@@ -92,8 +119,7 @@ class DefaultTest extends \PHPUnit_Framework_TestCase
 
     public function testErrorParam()
     {
-//        $oGandi = new GandiAPITest($this->getApiKey());
-//        $result = $oGandi->domain->available(array('google.com'),array('phase' => 'open'));
-
+        $oGandi = new GandiAPITest($this->getApiKey());
+        $result = $oGandi->domain->available(array('google.com'),array('phase' => 'open'));
     }
 }
