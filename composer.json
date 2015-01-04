@@ -13,6 +13,9 @@
         "pear/http_request2": "dev-trunk",
         "pear/pear_exception": "dev-trunk"
     },
+    "require-dev": {
+        "satooshi/php-coveralls": "~0.6@stable"
+    },
     "autoload": {
         "psr-4": {
             "BespokeSupport\\Gandi\\": "src/"
