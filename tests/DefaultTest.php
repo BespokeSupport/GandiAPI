@@ -23,7 +23,7 @@ class DefaultTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    private function getApiKey()
+    public static function getApiKey()
     {
         if (defined('GANDI_TEST_API_KEY')) {
             return GANDI_TEST_API_KEY;
@@ -59,7 +59,7 @@ class DefaultTest extends \PHPUnit_Framework_TestCase
     public function testErrorNoMethodSet()
     {
         try {
-            $oGandi = new GandiAPITest($this->getApiKey());
+            $oGandi = new GandiAPITest(self::getApiKey());
             $oGandi->version();
             $this->assertTrue(false);
         } catch (GandiException $e) {
@@ -68,58 +68,19 @@ class DefaultTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-
     public function testLiveTestClasses()
     {
-        $oGandi = new GandiAPILive($this->getApiKey());
-        $oGandi = new GandiAPITest($this->getApiKey());
+        $oGandi = new GandiAPILive(self::getApiKey());
+        $oGandi = new GandiAPITest(self::getApiKey());
         $this->assertTrue(true);
     }
 
     public function testInstantiateTest()
     {
-        $oGandi = new GandiAPI($this->getApiKey());
+        $oGandi = new GandiAPI(self::getApiKey());
 
-        $this->assertEquals($this->getApiKey(), $oGandi->getApiKey());
+        $this->assertEquals(self::getApiKey(), $oGandi->getApiKey());
         $this->assertEquals(GandiAPI::URL_TEST, $oGandi->getUrl());
         $this->assertFalse($oGandi->live);
-    }
-
-    public function testApiVersion()
-    {
-        $oGandi = new GandiAPITest($this->getApiKey());
-        $result = $oGandi->version->info();
-        $this->assertEquals('version', $oGandi->getPrefix());
-        $this->assertArrayHasKey('api_version', $result);
-        $this->assertEquals($result['api_version'], self::API_VERSION);
-    }
-
-
-    public function testApiSystem()
-    {
-        $oGandi = new GandiAPITest($this->getApiKey());
-        $result = $oGandi->domain->available(array('google.com'));
-        $this->assertArrayHasKey('google.com', $result);
-        $this->assertTrue(in_array($result['google.com'], array('pending', 'unavailable')));
-
-        $result = $oGandi->domain->available(array('google.com'),array('phase' => 'open'));
-        $this->assertArrayHasKey('google.com', $result);
-        $this->assertTrue(in_array($result['google.com'], array('pending', 'unavailable')));
-    }
-
-    public function testApiTwoMethod()
-    {
-        $oGandi = new GandiAPITest($this->getApiKey());
-        $result = $oGandi->hostingIp->count();
-        $this->assertEquals('0', $result);
-        $result = $oGandi->hosting->ipCount();
-        $this->assertEquals('0', $result);
-    }
-
-
-    public function testErrorParam()
-    {
-        $oGandi = new GandiAPITest($this->getApiKey());
-        $result = $oGandi->domain->available(array('google.com'),array('phase' => 'open'));
     }
 }
