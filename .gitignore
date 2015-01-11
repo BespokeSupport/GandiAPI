@@ -3,5 +3,5 @@
 /vendor/*
 composer.lock
 /build/*
+!/build/.gitkeep
 /credentials.php
-.coveralls.yml
