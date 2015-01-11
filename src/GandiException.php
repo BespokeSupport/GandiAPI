@@ -20,4 +20,5 @@ class GandiException extends \Exception
 {
     const ERROR_API_KEY_INVALID  = 'GandiAPI: API Key invalid length (24)';
     const ERROR_PREFIX_NOT_SET  = 'GandiAPI: API Method not set';
+    const ERROR_PREFIX_UNAVAILABLE = 'GandiAPI: API set not available';
 }
