@@ -38,9 +38,19 @@ class GandiAPI
     protected $apiKey;
 
     /**
-     * @var string method being used
+     * @var string api section being used
      */
     protected $prefix = '';
+
+    /**
+     * @var string
+     */
+    protected $method = '';
+
+    /**
+     * @var
+     */
+    protected $calledMethod;
 
     /**
      * Instantiates class
@@ -78,7 +88,12 @@ class GandiAPI
         );
 
         if (!empty($property)) {
-            $this->prefix = $property;
+
+            if ($this->calledMethod) {
+                $this->resetPrefix();
+            }
+
+            $this->prefix .= $property;
         }
 
         return $this;
@@ -94,13 +109,10 @@ class GandiAPI
      */
     function __call($method, $args)
     {
-        $method = preg_replace_callback(
-            '#([\p{Lu}]+)#',
-            function ($matches) {
-                return strtolower('.' . $matches[0]);
-            },
-            $method
-        );
+
+        $this->method = $method;
+
+        $this->calledMethod = $this->getCompleteMethod();
 
         /**
          * @var $xml \XML_RPC2_Backend_Php_Client
@@ -113,31 +125,19 @@ class GandiAPI
             )
         );
 
-        if (isset($args[1])) {
-            return $xml->__call(
-                $method,
-                array(
-                    $this->getApiKey(),
-                    $args[0],
-                    $args[1]
-                )
-            );
-        } elseif (isset($args[0])) {
-            return $xml->__call(
-                $method,
-                array(
-                    $this->getApiKey(),
-                    $args[0]
-                )
-            );
-        } else {
-            return $xml->__call(
-                $method,
-                array(
-                    $this->getApiKey()
-                )
-            );
+        $callArray = array();
+
+        if (GandiAPIMethodRequirements::isApiKeyRequired($this->calledMethod)) {
+            $callArray[] = $this->getApiKey();
         }
+
+        foreach ($args as $a) {
+            $callArray[] = $a;
+        }
+
+        $apiResult = $xml->__call($this->method, $callArray);
+
+        return $apiResult;
     }
 
     /**
@@ -169,5 +169,23 @@ class GandiAPI
         }
 
         return $this->prefix;
+    }
+
+    /**
+     * @return string
+     * @throws GandiException
+     */
+    public function getCompleteMethod()
+    {
+        return $this->getPrefix().'.'.$this->method;
+    }
+
+    /**
+     * @return $this
+     */
+    public function resetPrefix()
+    {
+        $this->prefix = '';
+        return $this;
     }
 }
