@@ -135,7 +135,13 @@ class GandiAPI
             $callArray[] = $a;
         }
 
-        $apiResult = $xml->__call($this->method, $callArray);
+        try {
+            $apiResult = $xml->__call($this->method, $callArray);
+        } catch (\XML_RPC2_CurlException $e) {
+            // @codeCoverageIgnoreStart
+            $apiResult = array();
+            // @codeCoverageIgnoreEnd
+        }
 
         return $apiResult;
     }
