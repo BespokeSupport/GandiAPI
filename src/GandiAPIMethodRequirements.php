@@ -84,7 +84,6 @@ class GandiAPIMethodRequirements
         'iface',
         'image',
         'notification',
-        'notification.system',
         'notification.subscription',
         'operation',
         'paas',
@@ -95,7 +94,6 @@ class GandiAPIMethodRequirements
         'postit',
         'product',
         'version',
-        'security',
         'security.key',
         'snapshotprofile',
         'system',
@@ -322,7 +320,6 @@ class GandiAPIMethodRequirements
         'notification.subscription.create',
         'notification.subscription.delete',
         'notification.subscription.list',
-        'notification.system',
         'notification.test',
         'operation.cancel',
         'operation.count',
@@ -362,7 +359,7 @@ class GandiAPIMethodRequirements
         'product.delete',
         'product.renew',
         'product.update',
-        'security.key',
+        'security.key.renew',
         'snapshotprofile.count',
         'snapshotprofile.list',
         'system.listMethods',
@@ -390,16 +387,16 @@ class GandiAPIMethodRequirements
      * @param $method
      * @return bool
      */
-    public function isApiKeyRequired($method)
+    public static function isApiKeyRequired($method)
     {
-        return (in_array($method, self::$noApiKeyRequired));
+        return !(in_array($method, self::$noApiKeyRequired));
     }
 
     /**
      * @param $prefix
      * @return bool
      */
-    public function prefixAvailable($prefix)
+    public static function prefixAvailable($prefix)
     {
         return (in_array($prefix, self::$prefixes));
     }
