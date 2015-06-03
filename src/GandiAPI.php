@@ -12,6 +12,9 @@
 
 namespace BespokeSupport\Gandi;
 
+use fXmlRpc\Client;
+use fXmlRpc\Transport\Guzzle4Bridge;
+
 /**
  * Class GandiAPI
  * @package BespokeSupport\Gandi
@@ -114,17 +117,6 @@ class GandiAPI
 
         $this->calledMethod = $this->getCompleteMethod();
 
-        /**
-         * @var $xml \XML_RPC2_Backend_Php_Client
-         */
-        $xml = \XML_RPC2_Client::create(
-            $this->getUrl(),
-            array(
-                'sslverify' => false,
-                'prefix' => $this->getPrefix() . '.'
-            )
-        );
-
         $callArray = array();
 
         if (GandiAPIMethodRequirements::isApiKeyRequired($this->calledMethod)) {
@@ -136,8 +128,24 @@ class GandiAPI
         }
 
         try {
-            $apiResult = $xml->__call($this->method, $callArray);
-        } catch (\XML_RPC2_CurlException $e) {
+
+            $guzzle = new \GuzzleHttp\Client(array(
+                'verify' => false
+            ));
+
+            $transport = new Guzzle4Bridge($guzzle);
+
+            $client = new Client(
+                $this->getUrl(),
+                $transport
+            );
+
+            $apiResult = $client->call(
+                $this->getCompleteMethod(),
+                $callArray
+            );
+
+        } catch (\Exception $e) {
             // @codeCoverageIgnoreStart
             $apiResult = array();
             // @codeCoverageIgnoreEnd

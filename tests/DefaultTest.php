@@ -11,7 +11,7 @@ class DefaultTest extends \PHPUnit_Framework_TestCase
 {
     const API_KEY_INVALID = 'test';
 
-    const API_VERSION = '3.3.24';
+    const API_VERSION = '3.3.29';
 
     /**
      *
